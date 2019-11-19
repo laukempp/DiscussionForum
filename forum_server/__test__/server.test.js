@@ -1,14 +1,6 @@
 const request = require('supertest');
 const app = require('../app')
-/* test("POST to /api/topics succesfully creates a data entry", (done) => {
-  return request(app)
-    .post("/api/topics").send({title:'Otsikko', nickname: 'Nimimerkki', comment: 'Testikommentti'})
-    .expect('Location', /)
-    .then(response => {
-      expect(response.statusCode).toBe(201);
-      done();
-  });
-}); */
+
 test("/api/topics should return data (statuscode 200)", () => {
   return request(app)
     .get('/api/topics').then(response => {
@@ -38,12 +30,14 @@ test("/api/topics/:id should delete a topic", () => {
 })
 
 test("/api/topics/:id should be able to update a topic", ()=>{
-    const id = 19;
-    const nickname = "uusi nickname";
+    const id = 10;
+    const nickname = "Veikko";
     const title = "uusi title";
     const comment = "uusi kommentti";
     return request(app)
     .put(`/api/topics/${id}`).send({nickname, title, comment}).then(response => {
         expect(response.statusCode).toBe(200 || 204);
+        expect(response.body).toBeDefined();
+        expect(response.body.nickname).toMatch('Veikko');
     })
 })
