@@ -43,11 +43,4 @@ router.route('/:id')
   })
 });
 
-//POST a topic
-// router.post
-
-// router.delete
-
-// router.put
-
 module.exports = router;

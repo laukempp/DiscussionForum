@@ -1,4 +1,4 @@
-const url = '/api/topics';
+/* const url = '/api/topics'; */
 const Pool = require('pg').Pool;
 const config = require('./config');
 
@@ -69,4 +69,74 @@ function updateTopic(req, res, callback) {
             });
     });
 }
-    module.exports = {getAllTopics, getSingleTopic, createTopic, removeTopic, updateTopic};
+
+// Connecting to table comments
+
+    function getAllComments(callback) {
+        pool.connect((err, client) => {
+            if (err) throw err;
+            client.query('SELECT * FROM comment', (err, data) => {
+                    if (err) throw err;
+                    client.release();
+                    callback(data.rows);
+                });
+        });
+    }
+    // Get single comment from database
+    function getSingleComment(id, callback) {
+        pool.connect((err, client) => {
+            if (err) throw err;
+            client.query('SELECT * FROM comment where id = $1', [id], (err, data) => {
+                    if (err) throw err;
+                    client.release();
+                    console.log(data.rows);
+                    callback(data.rows[0]);
+                });
+        });
+    }
+    //Creating a comment
+    function createComment(req, callback) {
+        pool.connect((err, client) => {
+            if (err) throw err;
+            client.query('INSERT INTO comment(topic_id, input, c_nickname) VALUES($1, $2, $3)',
+                    [req.body.topic_id, req.body.input, req.body.c_nickname], (err, data) => {
+                if (err) throw err;
+                client.release();
+                callback();
+            });
+        });
+    }
+    //Removing comment based on id
+    function removeComment(req, res, callback) {
+        pool.connect((err, client) => {
+            if (err) throw err;
+            client.query('DELETE FROM comment WHERE id = $1',
+                [parseInt(req.params.id)], (err, data) => {
+                    if (err) throw err;
+                    client.release();
+                    // kerrotaan että onnistui
+                    res.status(202)
+                        .json({
+                            status: 'Onnistui',
+                            message: 'Poistettiin kommentti.'
+                        });
+                    callback();
+                });
+        });
+    }
+    // Updating comment based on id
+    function updateComment(req, res, callback) {
+        pool.connect((err, client) => {
+            if (err) throw err;
+            client.query('UPDATE comment SET c_nickname = $1, input = $2, topic_id = $3 WHERE id = $4',
+                [req.body.c_nickname, req.body.input, req.body.topic_id, parseInt(req.params.id)], (err, data) => {
+                    if (err) throw err;
+                    client.release();
+                    res.json(req.body);
+                    callback(data.rows[0]);
+                });
+        });
+    }
+
+    module.exports = {getAllTopics, getSingleTopic, createTopic, removeTopic, updateTopic,
+getAllComments, getSingleComment, createComment, removeComment, updateComment};
