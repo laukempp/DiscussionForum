@@ -37,7 +37,7 @@ router.route('/:id')
   })
 })
 .put(function (req, res) {
-  db.updateTopic(req, function () {
+  db.updateTopic(req, res, function () {
       res.status(200)
           .end();
   })
