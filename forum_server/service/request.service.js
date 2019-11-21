@@ -89,14 +89,19 @@ function updateTopic(req, res, callback) {
 
 // Connecting to table comments
 
-function getAllComments(callback) {
+function getAllComments(topic_id, callback) {
   pool.connect((err, client) => {
     if (err) throw err;
-    client.query("SELECT * FROM comment", (err, data) => {
-      if (err) throw err;
-      client.release();
-      callback(data.rows);
-    });
+    client.query(
+      "SELECT * FROM comment WHERE topic_id = $1",
+      [topic_id],
+      (err, data) => {
+        if (err) throw err;
+        console.log("All", topic_id, data.rows);
+        client.release();
+        callback(data.rows);
+      }
+    );
   });
 }
 // Get single comment from database
@@ -113,11 +118,12 @@ function getSingleComment(id, callback) {
 }
 //Creating a comment
 function createComment(req, callback) {
+  console.log("POSTATAAN", req.body, req.params.id);
   pool.connect((err, client) => {
     if (err) throw err;
     client.query(
       "INSERT INTO comment(topic_id, input, c_nickname) VALUES($1, $2, $3)",
-      [req.body.topic_id, req.body.input, req.body.c_nickname],
+      [req.params.id, req.body.input, req.body.c_nickname],
       (err, data) => {
         if (err) throw err;
         client.release();
