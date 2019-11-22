@@ -28,8 +28,12 @@ router
 router
   .route("/:id")
   .get(function(req, res) {
-    db.getSingleTopic(req, function(results) {
-      res.json(results);
+    const idInt = parseInt(req.params.id);
+    /* if(idInt = NaN){res.status(400).send(); return;} */
+    db.getSingleTopic(idInt, function(results) {
+      if (results)
+      {res.json(results);}
+      else res.status(404).send();
     });
   })
   .delete(function(req, res) {

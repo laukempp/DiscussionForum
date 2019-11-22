@@ -16,12 +16,13 @@ function getAllTopics(callback) {
   });
 }
 // Get single topic from database
-function getSingleTopic(req, callback) {
+function getSingleTopic(id, callback) {
+  console.log(id)
   pool.connect((err, client) => {
     if (err) throw err;
     client.query(
       "SELECT * FROM topic where id = $1",
-      [req.params.id],
+      [id],
       (err, data) => {
         if (err) throw err;
         client.release();

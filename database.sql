@@ -19,5 +19,4 @@ CREATE TABLE comment(
 
 
 
-/* INSERT INTO topic(nickname, title) VALUES('testinimi', 'testiotsikko');
- */
+INSERT INTO topic(nickname, title) VALUES('testinimi', 'testiotsikko');
