@@ -12,7 +12,9 @@ router
   .route("/:id/comments")
 
   .get(function(req, res) {
-    db.getAllComments(req.params.id, function(comments, err) {
+    const idInt = parseInt(req.params.id);
+    /* if(idInt.isNaN()){res.status(400).send(); return;} */
+    db.getAllComments(idInt, function(comments, err) {
       if (err) res.status(500).send(JSON.stringify(err.message));
       else res.send(JSON.stringify(comments));
     });
